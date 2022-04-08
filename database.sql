@@ -2,7 +2,8 @@ create extension pgcrypto;
 
 create table users(
   user_id serial not null primary key,
-  password varchar(45) not null,
+  username varchar(45) unique not null,
+  password varchar(64) not null,
   user_status smallint default 1
 );
 create table files(

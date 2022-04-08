@@ -1,7 +1,12 @@
-const {books}  = require('./model')
+const {createLibrarian, createUser, createReader}  = require('./model')
 
 module.exports.resolvers = {
   Query: {
-    books: () => books,
+    
   },
+  Mutation: {
+    createLibrarian: ( _,{username, password, phone, firstName, lastName, file }) =>{
+      console.log(username, password, phone, firstName, lastName, file )
+    }
+  }
 };
