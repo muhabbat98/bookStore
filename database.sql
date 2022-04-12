@@ -11,6 +11,9 @@ create table files(
   src varchar(128) not null,
   type varchar(32)
 );
+-- 1 reader
+-- 2 librarian_id
+-- 3 admin
 create table readers(
   reader_id serial not null primary key,
   user_id int not null references users(user_id),

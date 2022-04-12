@@ -1,11 +1,14 @@
+// @ts-nocheck
 const { ApolloServer } = require('apollo-server-express');
 const { ApolloServerPluginDrainHttpServer,ApolloServerPluginLandingPageGraphQLPlayground,ApolloServerPluginLandingPageDisabled } = require( 'apollo-server-core');
 const express = require( 'express');
 const http = require( 'http');
 const users = require( './modules/users' );
-const {fileController} = require('./modules/files')
+const resources = require('./modules/resources')
+const {fileController, fileUrl} = require('./modules/files')
 const modules = [
-  users
+  users,
+  resources
 ];
 async function startApolloServer ( modules )
 {
@@ -17,7 +20,8 @@ async function startApolloServer ( modules )
         ? ApolloServerPluginLandingPageDisabled()
         : ApolloServerPluginLandingPageGraphQLPlayground(),],
   } );
-  app.post( '/files', fileController );
+  app.use('/uploads',express.static('./uploads'))
+  app.post( '/files',fileUrl, fileController );
   await server.start();
   server.applyMiddleware({ app });
   await new Promise( resolve => httpServer.listen( { port: 4000 }, resolve ) );
