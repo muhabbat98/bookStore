@@ -29,7 +29,7 @@ module.exports.resolvers = {
         const user = await createUser( username, password, 2)
         // @ts-ignore
         const librarian = await createLibrarian( user.user_id, phone, firstName, lastName, file, email, library )  
-        const token = sign( username )  
+        const token = sign({ username, userType:"librarian"} )  
         return {
           status: 201,
           data:{
@@ -53,7 +53,7 @@ module.exports.resolvers = {
         const user = await createUser( username, password, 1)
         // @ts-ignore
         const reader = await createReader( user.user_id, phone, firstName, lastName, file )
-        const token = sign(username)        
+        const token = sign({ username, userType:"reader"} )         
         return  {
           status: 201,
           data:{
@@ -77,7 +77,7 @@ module.exports.resolvers = {
         const user = await checkUser( username, password, 1 ) 
         // @ts-ignore
         const reader = await findReader( user.user_id )
-        const token = sign( username )      
+        const token = sign({ username, userType:"reader"} )        
       
         return  {
           status: 200,
@@ -98,13 +98,11 @@ module.exports.resolvers = {
       }
     },
     checkLibrarian: async( _,{username, password }) =>{
-      try
-      {   
-         console.log(username, password)
+      try{   
         const user = await checkUser( username, password, 2 ) 
         // @ts-ignore
         const library = await findLibrarian( user.user_id )       
-        const token = sign( username )      
+        const token = sign({ username, userType:"librarian"} )      
        
         return  {
           status: 200,
@@ -113,6 +111,29 @@ module.exports.resolvers = {
             ...library
           },
           message: "successfully find librarian",
+          token
+        }
+      
+      } catch ( err ){
+         return {
+          status: 409,
+          data: null,
+          message:err.message
+        }
+      }
+    },
+    checkUser:async( _,{username, password }) =>{
+      try{   
+        const user = await checkUser( username, password, 3 ) 
+        // @ts-ignore    
+        const token = sign({ username, userType:"admin"} )      
+       
+        return  {
+          status: 200,
+          data:{
+            ...user
+          },
+          message: "successfully find admin",
           token
         }
       

@@ -12,6 +12,10 @@ module.exports.typeDefs = gql`
     lastName:String, 
     file:String
   }
+  type User{
+    id:String,
+    username:String
+  }
   type Librarian{
     username:String,
     phone:String,
@@ -33,11 +37,18 @@ module.exports.typeDefs = gql`
     data:Librarian,
     token:String!
   }
+  type ReturningUser{
+    status:Int!,
+    message:String,
+    data:User,
+    token:String!
+  }
   type Mutation{
     createReader(username:String!, password:String!,  phone:String!,  firstName:String, lastName:String, file:String):ReturningReader,
     createLibrarian(username:String!, password:String!,  phone:String!,  firstName:String, lastName:String, file:String, email:String, library:String):ReturningLibrarian,
     checkReader(username:String!, password:String!):ReturningReader!,
-    checkLibrarian(username:String!, password:String!):ReturningLibrarian!
+    checkLibrarian(username:String!, password:String!):ReturningLibrarian!,
+    checkUser(username:String!, password:String!):ReturningUser!
   }
 `;
 

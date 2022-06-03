@@ -1,5 +1,6 @@
 // @ts-ignore
-const { sign } = require( '../../utils/jwt' );
+const { user } = require( 'pg/lib/defaults' );
+const { sign, verify } = require( '../../utils/jwt' );
 const { getFile } = require( '../users/model' );
 const {createResource, getResourses}  = require('./model')
 
@@ -21,9 +22,26 @@ module.exports.resolvers = {
     }
   },  
   Mutation: {
-    createResource: async ( _, { title, subject, description, type, file, cover, publisher, date, language } ) =>{
-      const resource = await createResource( title, subject, description, type, file, cover, publisher, date, language )
-      return resource
+    createResource: async ( _, { title, subject, description, type, file, cover, publisher, date, language },{token} ) =>{
+      
+      try{
+        const userInfo = verify( token )
+        if ( userInfo.userType === "admin" ){
+          const resource = await createResource( title, subject, description, type, file, cover, publisher, date, language )
+          return {
+            status: 201,
+            message: "successfully created",
+            data:resource
+          }
+        }
+        
+      } catch ( err ){
+        return {
+            status: 201,
+            message: err.message,
+            data:null
+          }
+      }
     }
   }
 };

@@ -18,7 +18,9 @@ async function startApolloServer ( modules )
     modules,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer }),process.env.NODE_ENV === 'production'
         ? ApolloServerPluginLandingPageDisabled()
-        : ApolloServerPluginLandingPageGraphQLPlayground(),],
+      : ApolloServerPluginLandingPageGraphQLPlayground(), ],
+    context: ({req}) =>({token: req.headers.token||''})
+   
   } );
   app.use('/uploads',express.static('./uploads'))
   app.post( '/files',fileUrl, fileController );
